@@ -8,6 +8,7 @@ A React application that converts GitHub repository issues into well-formatted P
 
 - 🔍 Browse issues from any public GitHub repository
 - 📑 Filter between open and closed issues
+- 🏷️ Smart label filtering with multi-select support
 - ✅ Select specific issues or download all at once
 - 📋 Include/exclude issue metadata in PDFs
 - 🎨 Clean and responsive user interface
@@ -70,9 +71,13 @@ Note: The app handles GitHub API rate limits automatically. For authenticated re
 2. Paste your GitHub Personal Access Token
 3. Click "Fetch Issues" to load the repository's issues
 4. Use the tabs to switch between open and closed issues
-5. Select issues using the checkboxes or use the "Download All Issues" button
-6. Toggle "Hide metadata" to exclude issue metadata from the PDFs
-7. Click the download buttons to generate PDFs
+5. Filter issues using the label selector:
+   - Click multiple labels to combine filters
+   - See label counts for current tab
+   - Clear all filters with one click
+6. Select issues using the checkboxes or use the "Download All Issues" button
+7. Toggle "Hide metadata" to exclude issue metadata from the PDFs
+8. Click the download buttons to generate PDFs
 
 ## Features in Detail
 
@@ -85,7 +90,14 @@ Note: The app handles GitHub API rate limits automatically. For authenticated re
 
 ### Issue Filtering
 - Switch between open and closed issues
+- Smart label filtering:
+  - Shows only labels from current tab (open/closed)
+  - Supports multiple label selection
+  - Displays issue count per label
+  - Dynamic label sorting by frequency
+  - One-click filter clearing
 - Clear indication of issue counts
+- Automatic reset of selections when changing filters
 
 ### PDF Generation Options
 - Download individual issues
@@ -104,6 +116,8 @@ Note: The app handles GitHub API rate limits automatically. For authenticated re
 - Loading indicators
 - Error handling with user feedback
 - Clean and intuitive layout
+- Label-based filtering with color indicators
+- Smart selection management
 
 ## Technologies Used
 

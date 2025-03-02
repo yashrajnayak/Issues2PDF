@@ -1,3 +1,8 @@
+export interface Label {
+  name: string;
+  color: string;
+}
+
 export interface Issue {
   id: number;
   number: number;
@@ -10,10 +15,7 @@ export interface Issue {
     login: string;
     avatar_url: string;
   };
-  labels: {
-    name: string;
-    color: string;
-  }[];
+  labels: Label[];
 }
 
 export interface GitHubCredentials {

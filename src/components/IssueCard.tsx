@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { Issue } from '../types';
 import { FileDown } from 'lucide-react';
 import { generateSingleIssuePDF } from '../services/pdf';
+import type { Components } from 'react-markdown';
 
 interface IssueCardProps {
   issue: Issue;
@@ -38,6 +39,110 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, registerRef, index, hideMe
       month: 'short',
       day: 'numeric',
     });
+  };
+
+  const markdownComponents: Partial<Components> = {
+    // Add spacing between paragraphs
+    p: ({children}) => (
+      <p className="mb-4">{children}</p>
+    ),
+    // Add spacing after headings
+    h1: ({children}) => (
+      <h1 className="text-2xl font-bold mb-6 mt-8">{children}</h1>
+    ),
+    h2: ({children}) => (
+      <h2 className="text-xl font-bold mb-4 mt-6">{children}</h2>
+    ),
+    h3: ({children}) => (
+      <h3 className="text-lg font-bold mb-3 mt-5">{children}</h3>
+    ),
+    h4: ({children}) => (
+      <h4 className="text-base font-bold mb-2 mt-4">{children}</h4>
+    ),
+    // Style links
+    a: ({href, children}) => (
+      <a 
+        href={href}
+        className="text-blue-600 hover:text-blue-800" 
+        target="_blank" 
+        rel="noopener noreferrer"
+      >
+        {children}
+      </a>
+    ),
+    // Style code blocks
+    pre: ({children}) => (
+      <pre className="bg-gray-100 rounded-md p-4 overflow-x-auto mb-4">
+        {children}
+      </pre>
+    ),
+    // Style inline code
+    code: ({className, children, ...props}) => {
+      const isInline = !className?.includes('language-');
+      return isInline ? (
+        <code className="bg-gray-100 rounded px-1 py-0.5 text-sm font-mono" {...props}>
+          {children}
+        </code>
+      ) : (
+        <pre className="bg-gray-100 rounded-md p-4 overflow-x-auto mb-4">
+          <code className="block text-sm font-mono" {...props}>
+            {children}
+          </code>
+        </pre>
+      );
+    },
+    // Style blockquotes
+    blockquote: ({children}) => (
+      <blockquote className="border-l-4 border-gray-200 pl-4 italic my-4">
+        {children}
+      </blockquote>
+    ),
+    // Style images
+    img: ({src, alt}) => (
+      <img 
+        src={src} 
+        alt={alt} 
+        className="max-w-full h-auto rounded-lg my-4" 
+      />
+    ),
+    // Style lists
+    ul: ({children}) => (
+      <ul className="list-disc pl-6 mb-4 space-y-2">
+        {children}
+      </ul>
+    ),
+    ol: ({children}) => (
+      <ol className="list-decimal pl-6 mb-4 space-y-2">
+        {children}
+      </ol>
+    ),
+    li: ({children}) => (
+      <li className="mb-1">
+        {children}
+      </li>
+    ),
+    // Style tables
+    table: ({children}) => (
+      <div className="overflow-x-auto mb-4">
+        <table className="min-w-full divide-y divide-gray-200">
+          {children}
+        </table>
+      </div>
+    ),
+    th: ({children}) => (
+      <th className="px-4 py-2 bg-gray-50 font-medium">
+        {children}
+      </th>
+    ),
+    td: ({children}) => (
+      <td className="px-4 py-2 border-t">
+        {children}
+      </td>
+    ),
+    // Add spacing between horizontal rules
+    hr: () => (
+      <hr className="my-8 border-t-2 border-gray-200" />
+    ),
   };
 
   return (
@@ -92,43 +197,14 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, registerRef, index, hideMe
       <div className="prose prose-sm max-w-none mt-4 text-gray-700">
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
-          components={{
-            a: ({node, ...props}) => (
-              <a {...props} className="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer" />
-            ),
-            pre: ({node, ...props}) => (
-              <pre {...props} className="bg-gray-100 rounded-md p-4 overflow-x-auto" />
-            ),
-            code: ({node, inline, ...props}) => (
-              inline 
-                ? <code {...props} className="bg-gray-100 rounded px-1 py-0.5" />
-                : <code {...props} className="block" />
-            ),
-            blockquote: ({node, ...props}) => (
-              <blockquote {...props} className="border-l-4 border-gray-200 pl-4 italic" />
-            ),
-            img: ({node, ...props}) => (
-              <img {...props} className="max-w-full h-auto rounded-lg" />
-            ),
-            table: ({node, ...props}) => (
-              <div className="overflow-x-auto">
-                <table {...props} className="min-w-full divide-y divide-gray-200" />
-              </div>
-            ),
-            th: ({node, ...props}) => (
-              <th {...props} className="px-4 py-2 bg-gray-50" />
-            ),
-            td: ({node, ...props}) => (
-              <td {...props} className="px-4 py-2 border-t" />
-            ),
-          }}
+          components={markdownComponents}
         >
           {issue.body || 'No description provided.'}
         </ReactMarkdown>
       </div>
       
       {!hideMetadata && (
-        <div className="mt-4 text-sm text-gray-500">
+        <div className="mt-6 text-sm text-gray-500">
           <span className={`inline-flex items-center px-2 py-1 rounded-full ${
             issue.state === 'open' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'
           }`}>
