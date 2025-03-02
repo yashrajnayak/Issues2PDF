@@ -43,98 +43,112 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue, registerRef, index, hideMe
 
   const markdownComponents: Partial<Components> = {
     // Add spacing between paragraphs
-    p: ({children}) => (
-      <p className="mb-4">{children}</p>
+    p: ({ children, ...props }: React.ComponentPropsWithoutRef<'p'>) => (
+      <p className="mb-4" {...props}>{children}</p>
     ),
     // Add spacing after headings
-    h1: ({children}) => (
-      <h1 className="text-2xl font-bold mb-6 mt-8">{children}</h1>
+    h1: ({ children, ...props }: React.ComponentPropsWithoutRef<'h1'>) => (
+      <h1 className="text-2xl font-bold mb-6 mt-8" {...props}>{children}</h1>
     ),
-    h2: ({children}) => (
-      <h2 className="text-xl font-bold mb-4 mt-6">{children}</h2>
+    h2: ({ children, ...props }: React.ComponentPropsWithoutRef<'h2'>) => (
+      <h2 className="text-xl font-bold mb-4 mt-6" {...props}>{children}</h2>
     ),
-    h3: ({children}) => (
-      <h3 className="text-lg font-bold mb-3 mt-5">{children}</h3>
+    h3: ({ children, ...props }: React.ComponentPropsWithoutRef<'h3'>) => (
+      <h3 className="text-lg font-bold mb-3 mt-5" {...props}>{children}</h3>
     ),
-    h4: ({children}) => (
-      <h4 className="text-base font-bold mb-2 mt-4">{children}</h4>
+    h4: ({ children, ...props }: React.ComponentPropsWithoutRef<'h4'>) => (
+      <h4 className="text-base font-bold mb-2 mt-4" {...props}>{children}</h4>
     ),
     // Style links
-    a: ({href, children}) => (
+    a: ({ href, children, ...props }: React.ComponentPropsWithoutRef<'a'>) => (
       <a 
         href={href}
         className="text-blue-600 hover:text-blue-800" 
         target="_blank" 
         rel="noopener noreferrer"
+        {...props}
       >
         {children}
       </a>
     ),
-    // Style code blocks
-    pre: ({children}) => (
-      <pre className="bg-gray-100 rounded-md p-4 overflow-x-auto mb-4">
-        {children}
-      </pre>
-    ),
-    // Style inline code
-    code: ({className, children, ...props}) => {
+    // Style code blocks and inline code
+    code: ({ className, children, ...props }: React.ComponentPropsWithoutRef<'code'>) => {
       const isInline = !className?.includes('language-');
-      return isInline ? (
-        <code className="bg-gray-100 rounded px-1 py-0.5 text-sm font-mono" {...props}>
-          {children}
-        </code>
-      ) : (
-        <pre className="bg-gray-100 rounded-md p-4 overflow-x-auto mb-4">
-          <code className="block text-sm font-mono" {...props}>
+      
+      if (isInline) {
+        return (
+          <code 
+            className="bg-gray-100 rounded px-1 py-0.5 text-sm font-mono" 
+            {...props}
+          >
             {children}
           </code>
-        </pre>
+        );
+      }
+
+      return (
+        <div className="mb-4">
+          <pre className="bg-gray-100 rounded-md p-4 overflow-x-auto">
+            <code 
+              className={`block text-sm font-mono ${className || ''}`}
+              {...props}
+            >
+              {children}
+            </code>
+          </pre>
+        </div>
       );
     },
+    // Remove pre component since it's handled in code component
+    pre: ({ children }) => <>{children}</>,
     // Style blockquotes
-    blockquote: ({children}) => (
-      <blockquote className="border-l-4 border-gray-200 pl-4 italic my-4">
+    blockquote: ({ children, ...props }: React.ComponentPropsWithoutRef<'blockquote'>) => (
+      <blockquote 
+        className="border-l-4 border-gray-200 pl-4 italic my-4"
+        {...props}
+      >
         {children}
       </blockquote>
     ),
     // Style images
-    img: ({src, alt}) => (
+    img: ({ src, alt, ...props }: React.ComponentPropsWithoutRef<'img'>) => (
       <img 
         src={src} 
         alt={alt} 
-        className="max-w-full h-auto rounded-lg my-4" 
+        className="max-w-full h-auto rounded-lg my-4"
+        {...props}
       />
     ),
     // Style lists
-    ul: ({children}) => (
+    ul: ({ children }) => (
       <ul className="list-disc pl-6 mb-4 space-y-2">
         {children}
       </ul>
     ),
-    ol: ({children}) => (
+    ol: ({ children }) => (
       <ol className="list-decimal pl-6 mb-4 space-y-2">
         {children}
       </ol>
     ),
-    li: ({children}) => (
+    li: ({ children }) => (
       <li className="mb-1">
         {children}
       </li>
     ),
     // Style tables
-    table: ({children}) => (
+    table: ({ children }) => (
       <div className="overflow-x-auto mb-4">
         <table className="min-w-full divide-y divide-gray-200">
           {children}
         </table>
       </div>
     ),
-    th: ({children}) => (
+    th: ({ children }) => (
       <th className="px-4 py-2 bg-gray-50 font-medium">
         {children}
       </th>
     ),
-    td: ({children}) => (
+    td: ({ children }) => (
       <td className="px-4 py-2 border-t">
         {children}
       </td>
